@@ -1,0 +1,27 @@
+html{
+	background-color: #69F0AE;
+	color:#2F2D32;
+}
+#container{
+	width:600px;
+	margin:50px auto;
+	background-color: #FCE4EC;
+	padding:20px 50px 50px;
+}
+h1{
+	text-align: center;
+}
+table{
+	width:360px;
+	margin:0 auto;
+}
+th,td{
+	padding:8px 20px;
+	text-align: center;
+}
+th{
+	background-color: #B2EBF2;
+}
+td{
+	background-color: #efefef;
+}
