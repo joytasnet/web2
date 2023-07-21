@@ -37,24 +37,15 @@ public class WordDAO {
 		}
 	}
 	
-	public List<Word> getListBySearchWord(String searchWord,String mode,int limit){
+	public List<Word> getListBySearchWord(String searchWord,String mode,int limit,int offset){
 		List<Word> list = new ArrayList<>();
-		switch(mode) {
-		case "startsWith":
-			searchWord = searchWord + "%";
-			break;
-		case "contains":
-			searchWord ="%"+ searchWord + "%";
-			break;
-		case "endsWith":
-			searchWord ="%"+ searchWord ;
-			break;
-		}
+		searchWord=modifySearchWord(searchWord,mode);
 		try {
 			this.connect();
-			ps=db.prepareStatement("SELECT * FROM words WHERE title LIKE ? LIMIT ?");
+			ps=db.prepareStatement("SELECT * FROM words WHERE title LIKE ? LIMIT ? OFFSET ?");
 			ps.setString(1, searchWord);
 			ps.setInt(2, limit);
+			ps.setInt(3, offset);
 			System.out.println(ps);
 			rs=ps.executeQuery();
 			while(rs.next()) {
@@ -79,17 +70,7 @@ public class WordDAO {
 	}
 	public int getCount(String searchWord,String mode) {
 		int total=0;
-		switch(mode) {
-		case "startsWith":
-			searchWord = searchWord + "%";
-			break;
-		case "contains":
-			searchWord ="%"+ searchWord + "%";
-			break;
-		case "endsWith":
-			searchWord ="%"+ searchWord ;
-			break;
-		}
+		searchWord=modifySearchWord(searchWord,mode);
 		try {
 			this.connect();
 			ps=db.prepareStatement("SELECT count(*) AS total FROM words WHERE title LIKE ?");
@@ -110,6 +91,20 @@ public class WordDAO {
 			}
 		}
 		return total;
+	}
+	private String modifySearchWord(String searchWord,String mode) {
+		switch(mode) {
+		case "startsWith":
+			searchWord = searchWord + "%";
+			break;
+		case "contains":
+			searchWord ="%"+ searchWord + "%";
+			break;
+		case "endsWith":
+			searchWord ="%"+ searchWord ;
+			break;
+		}
+		return searchWord;
 	}
 	
 
