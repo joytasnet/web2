@@ -1,21 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="model.User,model.Mutter,java.util.List" %>
-<%
-User loginUser = (User)session.getAttribute("loginUser");
-List<Mutter> mutterList=(List<Mutter>)request.getAttribute("mutterList");
-String errorMsg=(String)request.getAttribute("errorMsg");
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>どこつぶ</title>
 </head>
 <body>
 <h1>どこつぶメイン</h1>
 <p>
-<%=loginUser.getName() %>さん、ログイン中
+<c:out value="${loginUser.name }" />さん、ログイン中
 <a href="Logout">ログアウト</a>
 </p>
 <p><a href="Main">更新</a></p>
@@ -23,26 +18,26 @@ String errorMsg=(String)request.getAttribute("errorMsg");
 <input type="text" name="text">
 <input type="submit" value="つぶやく">
 </form>
-<% if(errorMsg != null){ %>
-<p><%=errorMsg %></p>
-<%} %>
-<% if(mutterList.size()>0){ %>
+<c:if test="${not empty errorMsg }">
+<p><c:out value="${errorMsg }" /></p>
+</c:if>
+<c:if test="${not empty mutterList }">
 <table border="1">
 <tr><th>ユーザー名</th><th>つぶやき</th><th></th></tr>
-<% for(Mutter mutter:mutterList){ %>
+<c:forEach var="mutter" items="${mutterList }">
 <tr>
-<td><%=mutter.getUserName() %></td>
-<td><%=mutter.getUserText() %></td>
+<td><c:out value="${mutter.userName }" /></td>
+<td><c:out value="${mutter.userText }" /></td>
 <td>
-<%if(mutter.getUserName().equals(loginUser.getName())){ %>
-<a href="Update?id=<%=mutter.getId() %>">変更</a>
-<a href="Delete?id=<%=mutter.getId() %>" onclick="return confirm('このつぶやきを削除してよろしいですか？')">削除</a>
-
-<%} %>
+<c:if test="${mutter.userName eq loginUser.name }">
+<a href="Update?id=${mutter.id }">変更</a>
+<a href="Delete?id=${mutter.id}" onclick="return confirm('このつぶやきを削除してよろしいですか？')">削除</a>
+</c:if>
 </td>
 </tr>
-<%} %>
+</c:forEach>
 </table>
-<%} %>
+</c:if>
+<jsp:include page="footer.jsp" />
 </body>
 </html>
